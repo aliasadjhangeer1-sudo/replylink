@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* Merged: zip base utilities (.btn/.card/.glass/.container) + full design tokens (§5B) */
+:root { color-scheme: dark; --background: 222 47% 6%; --foreground: 0 0% 100%; --card: 222 40% 10%; --border: 222 30% 20%; --primary: 262 83% 58%; --primary-foreground: 0 0% 100%; --muted: 222 30% 16%; --muted-foreground: 220 10% 65%; --secondary: 222 30% 14%; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: #0A0B14; color: #F8FAFC; font-family: Inter, Arial, sans-serif; }
+h1, h2, h3 { font-family: "Plus Jakarta Sans", Inter, sans-serif; letter-spacing: -0.03em; }
+a { text-decoration: none; color: inherit; }
+.container { width: min(1180px, calc(100% - 40px)); margin-inline: auto; }
+.gradient-text, .text-gradient { background: linear-gradient(90deg, #A78BFA, #EC4899, #F59E0B); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.gradient-bg, .bg-brand-gradient { background: linear-gradient(100deg, #9333EA, #DB2777, #F59E0B); }
+.glass { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); backdrop-filter: blur(16px); }
+.grid-bg { background-image: linear-gradient(rgba(139,92,246,.055) 1px, transparent 1px), linear-gradient(90deg, rgba(139,92,246,.055) 1px, transparent 1px); background-size: 48px 48px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 9px; border-radius: 999px; padding: 12px 20px; font-weight: 700; transition: .2s; min-height: 44px; }
+.btn:hover { transform: translateY(-2px); }
+.btn:active { transform: scale(.97); }
+.btn-primary { background: linear-gradient(100deg, #9333EA, #DB2777, #F59E0B); color: white; box-shadow: 0 8px 28px rgba(157,54,214,.29); }
+.btn-secondary { border: 1px solid #514477; background: #15152a; }
+.card { border: 1px solid rgba(167,139,250,.18); background: linear-gradient(145deg, rgba(25,28,55,.96), rgba(14,16,32,.96)); border-radius: 20px; }
+.muted { color: #A7A9C4; }
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-thumb { background: linear-gradient(#7C3AED, #EC4899); border-radius: 8px; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
