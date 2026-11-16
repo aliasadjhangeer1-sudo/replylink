@@ -43,15 +43,17 @@ export default function Dashboard() {
         }
         setEmail(data.user.email || "");
 
-        const { data: profile } = await s
-          .from("profiles")
-          .select("id, email, full_name, is_admin")
-          .eq("id", data.user.id)
-          .maybeSingle();
+        const [{ data: profile }, ws] = await Promise.all([
+          s
+            .from("profiles")
+            .select("id, email, full_name, is_admin")
+            .eq("id", data.user.id)
+            .maybeSingle(),
+          getUserWorkspace(s, data.user.id),
+        ]);
         const profileRow = profile as unknown as ProfileRow | null;
         setIsAdmin(profileRow?.is_admin ?? false);
 
-        const ws = await getUserWorkspace(s, data.user.id);
         setWorkspace(ws);
         if (!ws) {
           setLoading(false);

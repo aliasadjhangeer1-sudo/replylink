@@ -19,7 +19,7 @@ const NAV = [
   { href: "/automations", label: "Automations", icon: Bot },
   { href: "/accounts", label: "Accounts", icon: Instagram },
   { href: "/leads", label: "Leads", icon: Users },
-  { href: "/logs", label: "Activity logs", icon: BarChart3 },
+  { href: "/logs", label: "Logs", icon: BarChart3 },
   { href: "/billing", label: "Billing", icon: CreditCard },
   { href: "/settings", label: "Settings", icon: Settings },
 ];

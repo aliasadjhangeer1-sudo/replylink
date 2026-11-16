@@ -3,10 +3,14 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
 
-// Email-confirmation landing page. Handles BOTH Supabase link styles:
-//  - PKCE: ?code=...  -> exchangeCodeForSession in the browser (verifier is in localStorage)
-//  - Implicit: #access_token=... -> supabase-js auto-detects the hash on getSession()
-// A server route cannot see the #hash at all, so this must be a client page.
+// Email-confirmation / OAuth landing page. Routes each link style to the
+// handler that can actually complete it:
+//  - PKCE ?code=... -> hand off to /api/auth/callback (server exchange using
+//    the code-verifier cookie). Client-side exchange fails with "code verifier
+//    not found" when the link is opened in a different browser/app than the
+//    one that started signup — the server route fixes that.
+//  - ?token_hash=... -> verifyOtp({ token_hash, type }) in the browser.
+//  - #access_token=... (implicit) -> supabase-js auto-detects the hash on getSession().
 export default function AuthCallback() {
   const [msg, setMsg] = useState("Confirming your email…");
   const [failed, setFailed] = useState(false);
@@ -15,16 +19,22 @@ export default function AuthCallback() {
     let cancelled = false;
     async function run() {
       try {
-        const s = createSupabaseBrowserClient();
         const url = new URL(window.location.href);
-        const code = url.searchParams.get("code");
         const next = url.searchParams.get("next") || "/dashboard";
         const safeNext = next.startsWith("/") && !next.startsWith("//") ? next : "/dashboard";
+        const code = url.searchParams.get("code");
         if (code) {
-          const { error } = await s.auth.exchangeCodeForSession(code);
+          // Full navigation so cookies (incl. the PKCE verifier) are sent.
+          window.location.href = `/api/auth/callback?code=${encodeURIComponent(code)}&next=${encodeURIComponent(safeNext)}`;
+          return;
+        }
+        const s = createSupabaseBrowserClient();
+        const tokenHash = url.searchParams.get("token_hash");
+        if (tokenHash) {
+          const type = (url.searchParams.get("type") as "email" | "recovery" | "invite" | "magiclink" | "email_change") || "email";
+          const { error } = await s.auth.verifyOtp({ token_hash: tokenHash, type });
           if (error) throw error;
         }
-        // Hash flow (or a session already set by the exchange): detect + confirm.
         const { data, error } = await s.auth.getSession();
         if (error) throw error;
         if (!data.session) throw new Error("No session found. The confirmation link may have expired — request a new one from the login page.");
