@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
+import GoogleSignInButton from "@/components/google-signin-button";
 
 function LoginForm() {
   const params = useSearchParams();
@@ -64,6 +65,8 @@ function LoginForm() {
         <label className="mt-4 block text-sm">Password</label>
         <input required type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="mt-2 w-full rounded-xl border border-white/10 bg-black/20 p-3" />
         <button disabled={busy} className="btn btn-primary mt-6 w-full">{busy ? "Signing in..." : "Login"}</button>
+        <div className="mt-5 flex items-center gap-3 text-xs text-slate-500"><span className="h-px flex-1 bg-white/10" />or<span className="h-px flex-1 bg-white/10" /></div>
+        <GoogleSignInButton label="Continue with Google" />
         {msg && <p className={`mt-3 text-sm ${msgOk ? "text-emerald-300" : "text-rose-300"}`}>{msg}</p>}
         <button type="button" onClick={resend} disabled={resending} className="mt-4 w-full text-sm text-violet-300 underline-offset-2 hover:underline">
           {resending ? "Sending..." : "Resend confirmation email"}
